@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+import {ERC2771ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol";
+
 import "./SamplePoapV1.sol";
 
 /// Custom errors
 error InvalidOwner();
 
-contract SamplePoapV2 is SamplePoapV1 {
+contract SamplePoapV2 is SamplePoapV1, ERC2771ContextUpgradeable {
     // =============================================================
     //                            EVENTS
     // =============================================================
@@ -25,7 +27,9 @@ contract SamplePoapV2 is SamplePoapV1 {
     // =============================================================
 
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() {
+    constructor(
+        address _initTrustedForwarder
+    ) ERC2771ContextUpgradeable(_initTrustedForwarder) {
         _disableInitializers();
     }
    
@@ -65,6 +69,16 @@ contract SamplePoapV2 is SamplePoapV1 {
         delete _poapId[tokenId];
 
         emit PoapBurned(tokenOwner, poapId, tokenId);
+    }
+
+    /// Overrides required by {ERC2771ContextUpgradeable}
+    function _msgSender() internal view override(ContextUpgradeable, ERC2771ContextUpgradeable) returns (address) {
+        return ERC2771ContextUpgradeable._msgSender();
+    }
+
+    /// Overrides required by {ERC2771ContextUpgradeable}
+    function _msgData() internal view override(ContextUpgradeable, ERC2771ContextUpgradeable) returns (bytes calldata) {
+        return ERC2771ContextUpgradeable._msgData();
     }
 
     /**
