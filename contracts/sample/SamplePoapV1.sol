@@ -8,6 +8,7 @@ import {ERC721AUpgradeable} from "erc721a-upgradeable/contracts/ERC721AUpgradeab
 import {ERC2981Upgradeable} from "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import {RevokableDefaultOperatorFiltererUpgradeable} from"operator-filter-registry/src/upgradeable/RevokableDefaultOperatorFiltererUpgradeable.sol";
 import {RevokableOperatorFiltererUpgradeable} from "operator-filter-registry/src/upgradeable/RevokableOperatorFiltererUpgradeable.sol";
 
@@ -28,6 +29,7 @@ contract SamplePoapV1 is
     ERC2981Upgradeable,
     AccessControlUpgradeable,
     OwnableUpgradeable,
+    PausableUpgradeable,
     RevokableDefaultOperatorFiltererUpgradeable,
     ContractVersion
 {
@@ -133,6 +135,16 @@ contract SamplePoapV1 is
     function setDefaultRoyalty(address royaltyReceiver, uint96 feeBasisPoints) external virtual onlyRole(ADMIN_ROLE) {
         ERC2981Upgradeable._setDefaultRoyalty(royaltyReceiver, feeBasisPoints);
         emit DefaultRoyaltyUpdated(royaltyReceiver, feeBasisPoints);
+    }
+
+    /// Pause contract
+    function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
+        PausableUpgradeable._pause();
+    }
+
+    /// Unpause contract
+    function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
+        PausableUpgradeable._unpause();
     }
 
     // =============================================================
