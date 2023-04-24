@@ -117,22 +117,22 @@ contract SamplePoapV1 is
     // =============================================================
 
     /// Mint
-    function mint(address to, uint256 poapId) external virtual onlyRole(MINTER_ROLE) {
+    function mint(address to, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
         _mintSinglePoap(to, poapId);
     }
 
     /// Airdrop
-    function airdrop(address[] calldata receivers, uint256 poapId) external virtual onlyRole(MINTER_ROLE) {
+    function airdrop(address[] calldata receivers, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
         _airdropSinglePoap(receivers, poapId);
     }
 
     /// Set URI by POAP ID
-    function setPoapURI(uint256 poapId, string memory poapURI) external virtual onlyRole(ADMIN_ROLE) {
+    function setPoapURI(uint256 poapId, string memory poapURI) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
         _setPoapURI(poapId, poapURI);
     }
 
     /// Set default royalty information
-    function setDefaultRoyalty(address royaltyReceiver, uint96 feeBasisPoints) external virtual onlyRole(ADMIN_ROLE) {
+    function setDefaultRoyalty(address royaltyReceiver, uint96 feeBasisPoints) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
         ERC2981Upgradeable._setDefaultRoyalty(royaltyReceiver, feeBasisPoints);
         emit DefaultRoyaltyUpdated(royaltyReceiver, feeBasisPoints);
     }
