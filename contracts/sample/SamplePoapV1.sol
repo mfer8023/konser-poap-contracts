@@ -138,12 +138,12 @@ contract SamplePoapV1 is
     }
 
     /// Pause contract
-    function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function pause() external virtual onlyRole(DEFAULT_ADMIN_ROLE) {
         PausableUpgradeable._pause();
     }
 
     /// Unpause contract
-    function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function unpause() external virtual onlyRole(DEFAULT_ADMIN_ROLE) {
         PausableUpgradeable._unpause();
     }
 
