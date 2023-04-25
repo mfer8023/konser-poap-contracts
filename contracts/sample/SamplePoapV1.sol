@@ -350,6 +350,14 @@ contract SamplePoapV1 is
         return 1;
     }
 
+    ///  Overrides _beforeTokenTransfers() hook
+    function _beforeTokenTransfers(
+        address from,
+        address to,
+        uint256 startTokenId,
+        uint256 quantity
+    ) internal virtual override whenNotPaused {}
+
     /// See {UUPSUpgradeable}
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
