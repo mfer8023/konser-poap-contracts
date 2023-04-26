@@ -262,32 +262,38 @@ contract SamplePoapV1 is
 
     /// Set Poap URI internal
     function _setPoapURI(uint256 poapId, string memory poapURI) internal virtual {
+        // If total supply by Poap ID is zero
         if (_totalSupplyByPoapId[poapId] == 0) {
-            if (bytes(poapURI).length == 0) { 
-                if (bytes(_poapUri[poapId]).length == 0) {
-                    // Invalid URI
-                    revert InvalidURI();
-                } else {
-                    // Reset existing URI
-                    delete _poapUri[poapId];
-                    unchecked {
-                        _totalPoapId -= 1;
-                    }
-                    
-                }
+            // If Poap URI does not exist and new Poap URI is empty string
+            if (bytes(_poapUri[poapId]).length == 0 && bytes(poapURI).length == 0) { 
+                revert InvalidURI();
+            // If Poap URI does not exist and new Poap URI is non-empty string
             } else if (bytes(_poapUri[poapId]).length == 0 && bytes(poapURI).length != 0) {
                 // Set new URI
                 _poapUri[poapId] = poapURI;
                 unchecked {
                     _totalPoapId += 1;
                 }
+            // If Poap URI does exist and new Poap URI is empty string
+            } else if (bytes(_poapUri[poapId]).length != 0 && bytes(poapURI).length == 0) {
+                // Reset existing URI
+                delete _poapUri[poapId];
+                unchecked {
+                    _totalPoapId -= 1;
+                }
+            // If Poap URI does exist and new Poap URI is non-empty string
+            } else {
+                // Update existing URI
+                _poapUri[poapId] = poapURI;
             }
         }
-
+        // If total supply by Poap ID is non-zero
         if (_totalSupplyByPoapId[poapId] != 0) {
+            // If new Poap URI is empty string
             if (bytes(poapURI).length == 0) {
                 // URI can not be reset
                 revert URICanNotBeReset();
+            // If Poap URI does exist and new Poap URI is non-empty string
             } else if (bytes(_poapUri[poapId]).length != 0 && bytes(poapURI).length != 0) {
                 // Update existing URI
                 _poapUri[poapId] = poapURI;
