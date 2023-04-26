@@ -9,22 +9,11 @@ import "./SamplePoapV1.sol";
 error InvalidOwner();
 
 contract SamplePoapV2 is SamplePoapV1, ERC2771ContextUpgradeable {
-    // =============================================================
-    //                            EVENTS
-    // =============================================================
-
+    /// Event to be emitted
     event PoapBurned(address indexed owner, uint256 poapId, uint256 tokenId);
 
-    // =============================================================
-    //                            CONSTANTS
-    // =============================================================
-
-    /// `bytes32` identifier for burner role.
+    /// Constant
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
-
-    // =============================================================
-    //                          CONSTRUCTOR
-    // =============================================================
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor(
@@ -33,29 +22,17 @@ contract SamplePoapV2 is SamplePoapV1, ERC2771ContextUpgradeable {
         _disableInitializers();
     }
    
-    // =============================================================
-    //                          INITIALIZER
-    // =============================================================
-
     /// Initializer V2
     function initializeV2() external reinitializer(2) {
         __ContractVersion_init(2);
     }
-
-    // =============================================================
-    //                      EXTERNAL FUNCTIONS
-    // =============================================================
 
     /// Burn
     function burn(address tokenOwner, uint256 tokenId) external virtual onlyRole(BURNER_ROLE) {
         _burnSinglePoap(tokenOwner, tokenId);
     }
 
-    // =============================================================
-    //                      INTERNAL FUNCTIONS
-    // =============================================================
-
-    /// Burn
+    /// Burn internal
     function _burnSinglePoap(address tokenOwner, uint256 tokenId) internal virtual {
         if (ownerOf(tokenId) != tokenOwner) revert InvalidOwner();
 

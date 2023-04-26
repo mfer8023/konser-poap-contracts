@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 abstract contract ContractVersion is Initializable {
+    /// Storage
     uint8 internal _contractVersion;
 
     /// Init the contract by setting `contractVersion` to the implementation contract

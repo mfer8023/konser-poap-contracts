@@ -33,67 +33,34 @@ contract SamplePoapV1 is
     RevokableDefaultOperatorFiltererUpgradeable,
     ContractVersion
 {
-    // =============================================================
-    //                            EVENTS
-    // =============================================================
-
-    /// Emitted when POAP is minted to receiver
+    /// Events to be emitted
     event PoapMinted(address indexed receiver, uint256 poapId, uint256 tokenId);
-
-    /// Emitted when POAP is airdropped to receivers
     event PoapDropped(address[] receivers, uint256 poapId, uint256 startTokenId, uint256 totalMinted);
-
-    /// Emitted when POAP URI is updated
     event PoapURIUpdated(uint256 poapId, string uri);
-
-    /// Emitted when default royalty information for all tokens in the contract is updated
     event DefaultRoyaltyUpdated(address indexed royaltyReceiver, uint96 feeBasisPoints);
 
-    // =============================================================
-    //                            CONSTANTS
-    // =============================================================
-
-    /// `bytes32` identifier for admin role.
+    /// Constants
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-
-    /// `bytes32` identifier for minter role.
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    // =============================================================
-    //                            STORAGE
-    // =============================================================
-
-    /// Mapping from token ID to POAP ID
+    /// Storage
     mapping (uint256 => uint256) internal _poapId;
-
-    /// Mapping from POAP ID to total supply
     mapping (uint256 => uint256) internal _totalSupplyByPoapId;
-
-    /// Mapping from POAP ID to URI
     mapping (uint256 => string) internal _poapUri;
-
-    /// Total POAP ID
     uint256 internal _totalPoapId;
-
-    // =============================================================
-    //                          CONSTRUCTOR
-    // =============================================================
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
 
-    // =============================================================
-    //                          INITIALIZER
-    // =============================================================
+    /// Initializer
     function initialize(
         address _initRoyaltyReceiver,
         address _initAdmin,
         address _initMinter,
         uint96 _initFeeBasisPoints
     ) external initializerERC721A initializer {
-        // Init inherited contracts
         __ERC721A_init("Sample POAP", "POAP");
         __Context_init();
         __UUPSUpgradeable_init();
@@ -103,7 +70,6 @@ contract SamplePoapV1 is
         __RevokableDefaultOperatorFilterer_init();
         __ContractVersion_init(1);
 
-        // Init setup
         ERC2981Upgradeable._setDefaultRoyalty(_initRoyaltyReceiver, _initFeeBasisPoints);
         AccessControlUpgradeable._setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         AccessControlUpgradeable._setupRole(ADMIN_ROLE, _msgSender());
@@ -111,10 +77,6 @@ contract SamplePoapV1 is
         AccessControlUpgradeable._setupRole(ADMIN_ROLE, _initAdmin);
         AccessControlUpgradeable._setupRole(MINTER_ROLE, _initMinter);
     }
-
-    // =============================================================
-    //                      EXTERNAL FUNCTIONS
-    // =============================================================
 
     /// Mint
     function mint(address to, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
@@ -126,7 +88,7 @@ contract SamplePoapV1 is
         _airdropSinglePoap(receivers, poapId);
     }
 
-    /// Set URI by POAP ID
+    /// Set Poap URI
     function setPoapURI(uint256 poapId, string memory poapURI) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
         _setPoapURI(poapId, poapURI);
     }
@@ -147,28 +109,24 @@ contract SamplePoapV1 is
         PausableUpgradeable._unpause();
     }
 
-    // =============================================================
-    //                      PUBLIC FUNCTIONS
-    // =============================================================
-
-    /// Get POAP ID
+    /// Get Poap ID
     function getPoapId(uint256 tokenId) public view virtual returns (uint256) {
         if (!_exists(tokenId)) revert TokenIdDoesNotExist();
         return _poapId[tokenId];
     }
 
-    /// Get POAP URI
+    /// Get Poap URI
     function getPoapURI(uint256 poapId) public view virtual returns (string memory) {
         if (bytes(_poapUri[poapId]).length == 0) revert PoapIdDoesNotExist();
         return _poapUri[poapId];
     }
 
-    /// Get total POAP ID
+    /// Get total Poap ID
     function getTotalPoapId() public view virtual returns (uint256) {
         return _totalPoapId;
     }
 
-    /// Get total supply by POAP ID
+    /// Get total supply by Poap ID
     function getTotalSupplyByPoapId(uint256 poapId) public view virtual returns (uint256) {
         if (bytes(_poapUri[poapId]).length == 0) revert PoapIdDoesNotExist();
         return _totalSupplyByPoapId[poapId];
@@ -262,11 +220,7 @@ contract SamplePoapV1 is
             super.supportsInterface(interfaceId);
     }
 
-    // =============================================================
-    //                      INTERNAL FUNCTIONS
-    // =============================================================
-
-    /// Mint
+    /// Mint internal
     function _mintSinglePoap(address to, uint256 poapId) internal virtual {
         if (bytes(_poapUri[poapId]).length == 0) revert URIDoesNotExist();
 
@@ -282,11 +236,9 @@ contract SamplePoapV1 is
         emit PoapMinted(to, poapId, tokenId);
     }
 
-    /// Airdrop
+    /// Airdrop internal
     function _airdropSinglePoap(address[] calldata receivers, uint256 poapId) internal virtual {
-        // Cache next token ID as start from token ID to be minted.
         uint256 _startFromTokenId = _nextTokenId();
-
         uint256 receiversLength = receivers.length;
 
         for (uint256 i = 0; i < receiversLength;) {
@@ -308,7 +260,7 @@ contract SamplePoapV1 is
         emit PoapDropped(receivers, poapId, _startFromTokenId, receiversLength);
     }
 
-    /// Set URI by POAP ID
+    /// Set Poap URI internal
     function _setPoapURI(uint256 poapId, string memory poapURI) internal virtual {
         if (_totalSupplyByPoapId[poapId] == 0) {
             if (bytes(poapURI).length == 0) { 
@@ -350,7 +302,7 @@ contract SamplePoapV1 is
         return 1;
     }
 
-    ///  Overrides _beforeTokenTransfers() hook
+    ///  Overrides _beforeTokenTransfers() hook from {ERC721AUpgradeable}
     function _beforeTokenTransfers(
         address from,
         address to,
@@ -358,7 +310,7 @@ contract SamplePoapV1 is
         uint256 quantity
     ) internal virtual override whenNotPaused {}
 
-    /// See {UUPSUpgradeable}
+    /// Overrides _autohorizeUpgrade from {UUPSUpgradeable}
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
     /**
