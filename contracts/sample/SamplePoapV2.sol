@@ -19,8 +19,12 @@ contract SamplePoapV2 is SamplePoapV1 {
     }
    
     /// Initializer V2
-    function initializeV2() external reinitializer(2) {
+    function initializeV2(
+        address _initBurner
+    ) external reinitializer(2) {
         __ContractVersion_init(2);
+        AccessControlUpgradeable._setupRole(MINTER_ROLE, _msgSender());
+        AccessControlUpgradeable._setupRole(BURNER_ROLE, _initBurner);
     }
 
     /// Burn
