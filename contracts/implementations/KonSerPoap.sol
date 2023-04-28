@@ -472,16 +472,6 @@ contract KonSerPoap is
         emit PoapURIUpdated (poapId, poapURI);
     }
 
-    /// @dev Set default royalty internal by overriding _setDefaultRoyalty() from {ERC2981Upgradeable}
-    function _setDefaultRoyalty(address receiver, uint96 feeNumerator) internal virtual override {
-        if (feeNumerator > _feeDenominator()) revert InvalidFeeBasisPoints();
-        if (receiver == address(0)) revert InvalidRoyaltyReceiver();
-
-        _defaultRoyaltyInfo = RoyaltyInfo(receiver, feeNumerator);
-
-        emit DefaultRoyaltyUpdated(receiver, feeNumerator);
-    }
-
     /// @dev Overrides _startTokenId() from {ERC721AUpgradeable}
     function _startTokenId() internal view virtual override returns (uint256) {
         // Token ID starts from 1 (one)
