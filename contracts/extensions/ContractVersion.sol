@@ -3,11 +3,17 @@ pragma solidity ^0.8.17;
 
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
+/**
+ * @title ContractVersion
+ * @author mfer #8023 (https://github.com/mfer8023)
+ * @notice A contract module to set & track the recent version of the implementation contract
+ * @dev This contract module should be used through inheritance by the implementation contract
+ */
 abstract contract ContractVersion is Initializable {
-    /// Storage
+    /// @dev Init contract version
     uint8 internal _contractVersion;
 
-    /// Init the contract by setting `contractVersion` to the implementation contract
+    /// @dev Init the contract by setting `contractVersion` to the proxy contract
     function __ContractVersion_init(uint8 contractVersion) internal onlyInitializing {
         __ContractVersion_init_unchained(contractVersion);
     }
@@ -16,7 +22,7 @@ abstract contract ContractVersion is Initializable {
         _contractVersion = contractVersion;
     }
 
-    /// Get contract version
+    /// @dev Returns recent contract version
     function getContractVersion() public view virtual returns (uint8) {
         return _contractVersion;
     }
