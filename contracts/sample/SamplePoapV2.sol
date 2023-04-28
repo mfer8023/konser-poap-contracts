@@ -28,7 +28,7 @@ contract SamplePoapV2 is SamplePoapV1 {
     }
 
     /// Burn
-    function burn(address tokenOwner, uint256 tokenId) external virtual onlyRole(BURNER_ROLE) {
+    function burn(address tokenOwner, uint256 tokenId) external virtual onlyRole(BURNER_ROLE) whenNotPaused {
         _burnSinglePoap(tokenOwner, tokenId);
     }
 
