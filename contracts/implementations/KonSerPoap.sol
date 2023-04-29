@@ -146,7 +146,7 @@ contract KonSerPoap is
     mapping (uint256 => uint256) internal _totalSupplyByPoapId;
 
     /// @dev Mapping from poap ID to poap URI
-    mapping (uint256 => string) internal _poapUri;
+    mapping (uint256 => string) internal _poapURI;
 
     /// @dev Total poap ID
     uint256 internal _totalPoapId;
@@ -268,8 +268,8 @@ contract KonSerPoap is
      * @param poapId must exist
      */
     function getPoapURI(uint256 poapId) public view virtual returns (string memory) {
-        if (bytes(_poapUri[poapId]).length == 0) revert PoapIdDoesNotExist();
-        return _poapUri[poapId];
+        if (bytes(_poapURI[poapId]).length == 0) revert PoapIdDoesNotExist();
+        return _poapURI[poapId];
     }
 
     /**
@@ -284,7 +284,7 @@ contract KonSerPoap is
      * @param poapId must exist
      */
     function getTotalSupplyByPoapId(uint256 poapId) public view virtual returns (uint256) {
-        if (bytes(_poapUri[poapId]).length == 0) revert PoapIdDoesNotExist();
+        if (bytes(_poapURI[poapId]).length == 0) revert PoapIdDoesNotExist();
         return _totalSupplyByPoapId[poapId];
     }
 
@@ -293,7 +293,7 @@ contract KonSerPoap is
         if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
 
         uint256 poapId = _poapId[tokenId];
-        string memory poapURI = _poapUri[poapId];
+        string memory poapURI = _poapURI[poapId];
         
         return poapURI;
     }
@@ -366,7 +366,7 @@ contract KonSerPoap is
 
     /// @dev Mint internal logic
     function _mintSinglePoap(address to, uint256 poapId) internal virtual {
-        if (bytes(_poapUri[poapId]).length == 0) revert PoapURIDoesNotExist();
+        if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
 
         uint256 tokenId = _nextTokenId();
         _poapId[tokenId] = poapId;
@@ -388,7 +388,7 @@ contract KonSerPoap is
         for (uint256 i = 0; i < receiversLength;) {
             address _receivers = receivers[i];
 
-            if (bytes(_poapUri[poapId]).length == 0) revert PoapURIDoesNotExist();
+            if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
 
             uint256 tokenId = _nextTokenId();
             _poapId[tokenId] = poapId;
@@ -423,24 +423,24 @@ contract KonSerPoap is
     /// @dev Set Poap URI internal logic
     function _setPoapURI(uint256 poapId, string memory poapURI) internal virtual {
         if (_totalSupplyByPoapId[poapId] == 0) {
-            if (bytes(_poapUri[poapId]).length == 0 && bytes(poapURI).length == 0) { 
+            if (bytes(_poapURI[poapId]).length == 0 && bytes(poapURI).length == 0) { 
                 // Invalid URI
                 revert InvalidPoapURI();
-            } else if (bytes(_poapUri[poapId]).length == 0 && bytes(poapURI).length != 0) {
+            } else if (bytes(_poapURI[poapId]).length == 0 && bytes(poapURI).length != 0) {
                 // Set new URI
-                _poapUri[poapId] = poapURI;
+                _poapURI[poapId] = poapURI;
                 unchecked {
                     _totalPoapId += 1;
                 }
-            } else if (bytes(_poapUri[poapId]).length != 0 && bytes(poapURI).length == 0) {
+            } else if (bytes(_poapURI[poapId]).length != 0 && bytes(poapURI).length == 0) {
                 // Reset existing URI
-                delete _poapUri[poapId];
+                delete _poapURI[poapId];
                 unchecked {
                     _totalPoapId -= 1;
                 }
             } else {
                 // Update existing URI
-                _poapUri[poapId] = poapURI;
+                _poapURI[poapId] = poapURI;
             }
         }
 
@@ -448,9 +448,9 @@ contract KonSerPoap is
             if (bytes(poapURI).length == 0) {
                 // Existing URI can not be reset
                 revert PoapURICanNotBeReset();
-            } else if (bytes(_poapUri[poapId]).length != 0 && bytes(poapURI).length != 0) {
+            } else if (bytes(_poapURI[poapId]).length != 0 && bytes(poapURI).length != 0) {
                 // Update existing URI
-                _poapUri[poapId] = poapURI;
+                _poapURI[poapId] = poapURI;
             }
         }
 
