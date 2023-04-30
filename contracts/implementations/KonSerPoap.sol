@@ -61,9 +61,8 @@ import "../extensions/ContractVersion.sol";
 /**
  * @title KonSerPoap
  * @author mfer #8023 (https://github.com/mfer8023)
- * @notice A customized ERC721-based contract for POAP distribution & management by KonSer (https://konser.co.id)
- * @dev This contract is intended as an implementation to be deployed using UUPS Proxy pattern
- * @custom:version 1 
+ * @notice A version 1 (one) of customized ERC721-based contract for POAP by KonSer (https://konser.co.id)
+ * @dev This contract is intended as an implementation to be deployed using UUPS Proxy pattern 
  * @custom:source https://github.com/mfer8023/konser-poap-contracts
  * @custom:status This contract implementation is NOT audited but had been passed the unit testings
  */
