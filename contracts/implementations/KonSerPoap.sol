@@ -47,16 +47,14 @@ pragma solidity ^0.8.17;
 
 ***************************************************************************************/
                                                                                                                                                                                          
-import {RevokableDefaultOperatorFiltererUpgradeable} from"operator-filter-registry/src/upgradeable/RevokableDefaultOperatorFiltererUpgradeable.sol";
-import {RevokableOperatorFiltererUpgradeable} from "operator-filter-registry/src/upgradeable/RevokableOperatorFiltererUpgradeable.sol";
-import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {ERC2981Upgradeable} from "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
-import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
-import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {ERC721AUpgradeable} from "erc721a-upgradeable/contracts/ERC721AUpgradeable.sol";
+import "operator-filter-registry/src/upgradeable/RevokableDefaultOperatorFiltererUpgradeable.sol";
+import "operator-filter-registry/src/upgradeable/RevokableOperatorFiltererUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "erc721a-upgradeable/contracts/ERC721AUpgradeable.sol";
 
 import "../extensions/ContractVersion.sol";
 
@@ -70,8 +68,6 @@ import "../extensions/ContractVersion.sol";
  * @custom:status This contract implementation is NOT audited but had been passed the unit testings
  */
 contract KonSerPoap is
-    Initializable,
-    ContextUpgradeable,
     ERC721AUpgradeable,
     UUPSUpgradeable,
     ERC2981Upgradeable,
