@@ -365,12 +365,12 @@ contract KonSerPoap is
 
         uint256 tokenId = _nextTokenId();
         _poapId[tokenId] = poapId;
-        
-        ERC721AUpgradeable._mint(to, 1);
 
         unchecked {
             _totalSupplyByPoapId[poapId] += 1;
         }
+        
+        ERC721AUpgradeable._mint(to, 1);
 
         emit PoapMinted(to, poapId, tokenId);
     }
@@ -388,10 +388,13 @@ contract KonSerPoap is
             uint256 tokenId = _nextTokenId();
             _poapId[tokenId] = poapId;
 
+            unchecked {
+                _totalSupplyByPoapId[poapId] += 1;
+            }
+
             ERC721AUpgradeable._mint(_receivers, 1);
 
             unchecked {
-                _totalSupplyByPoapId[poapId] += 1;
                 ++i;
             }   
         }
