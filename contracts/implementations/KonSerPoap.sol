@@ -115,7 +115,7 @@ contract KonSerPoap is
     event PoapURIUpdated(uint256 poapId, string uri);
 
     /// @dev Emitted when a default royalty information is updated
-    event DefaultRoyaltyUpdated(address indexed royaltyReceiver, uint96 feeBasisPoints);
+    event RoyaltyInfoUpdated(address indexed royaltyReceiver, uint96 feeBasisPoints);
 
     // =============================================================
     //                          CONSTANTS
@@ -230,9 +230,9 @@ contract KonSerPoap is
      * @param royaltyReceiver cannot be the zero address
      * @param feeBasisPoints cannot be greater than 1000 (10%)
      */
-    function setDefaultRoyalty(address royaltyReceiver, uint96 feeBasisPoints) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
+    function setRoyaltyInfo(address royaltyReceiver, uint96 feeBasisPoints) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
         _setDefaultRoyalty(royaltyReceiver, feeBasisPoints);
-        emit DefaultRoyaltyUpdated(royaltyReceiver, feeBasisPoints);
+        emit RoyaltyInfoUpdated(royaltyReceiver, feeBasisPoints);
     }
 
     /// @notice Pause the contract
@@ -283,7 +283,11 @@ contract KonSerPoap is
         return _totalSupplyByPoapId[poapId];
     }
 
-    /// @dev Overrides the _tokenURI() from {ERC721AUpgradeable}
+    /**
+     * @notice Returns the Uniform Resource Identifier (URI) for `tokenId` token.
+     * @dev See {ERC721AUpgradeable-tokenURI}
+     * @param tokenId must exist
+     */
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
 
@@ -387,9 +391,7 @@ contract KonSerPoap is
         uint256 tokenId = _nextTokenId();
         _poapId[tokenId] = poapId;
 
-        unchecked {
-            _totalSupplyByPoapId[poapId] += 1;
-        }
+        unchecked { _totalSupplyByPoapId[poapId] += 1; }
         
         _mint(to, 1);
 
@@ -409,15 +411,11 @@ contract KonSerPoap is
             uint256 tokenId = _nextTokenId();
             _poapId[tokenId] = poapId;
 
-            unchecked {
-                _totalSupplyByPoapId[poapId] += 1;
-            }
+            unchecked { _totalSupplyByPoapId[poapId] += 1; }
 
             _mint(_receivers, 1);
 
-            unchecked {
-                ++i;
-            }   
+            unchecked { ++i;}   
         }
 
         emit PoapDropped(receivers, poapId, _startFromTokenId, receiversLength);
@@ -429,9 +427,8 @@ contract KonSerPoap is
 
         uint256 poapId = _poapId[tokenId];
 
-        unchecked {
-            _totalSupplyByPoapId[poapId] -= 1;
-        }
+        unchecked { _totalSupplyByPoapId[poapId] -= 1; }
+
         delete _poapId[tokenId];
         
         _burn(tokenId);
@@ -439,7 +436,7 @@ contract KonSerPoap is
         emit PoapBurned(tokenOwner, poapId, tokenId);
     }
 
-    /// @dev Set Poap URI internal logic
+    /// @dev Set poap URI internal logic
     function _setPoapURI(uint256 poapId, string memory poapURI) internal virtual {
         if (_totalSupplyByPoapId[poapId] == 0) {
             if (bytes(_poapURI[poapId]).length == 0 && bytes(poapURI).length == 0) { 
@@ -448,15 +445,11 @@ contract KonSerPoap is
             } else if (bytes(_poapURI[poapId]).length == 0 && bytes(poapURI).length != 0) {
                 // Set new URI
                 _poapURI[poapId] = poapURI;
-                unchecked {
-                    _totalPoapId += 1;
-                }
+                unchecked { _totalPoapId += 1; }
             } else if (bytes(_poapURI[poapId]).length != 0 && bytes(poapURI).length == 0) {
                 // Reset existing URI
                 delete _poapURI[poapId];
-                unchecked {
-                    _totalPoapId -= 1;
-                }
+                unchecked { _totalPoapId -= 1; }
             } else {
                 // Update existing URI
                 _poapURI[poapId] = poapURI;
@@ -476,19 +469,13 @@ contract KonSerPoap is
         emit PoapURIUpdated (poapId, poapURI);
     }
 
-    /// @dev See {ERC721AUpgradeable}
+    /// @dev See {ERC721AUpgradeable-_startTokenId}
     function _startTokenId() internal view virtual override returns (uint256) {
         // Token ID starts from 1 (one)
         return 1;
     }
 
-    /// @dev See {ERC2981Upgradeable}
-    function _feeDenominator() internal pure virtual override returns (uint96) {
-        // Royalty fee cannot be bigger than 1000 basis points (10%)
-        return 1000;
-    }
-
-    /// @dev See {ERC721AUpgradeable}
+    /// @dev See {ERC721AUpgradeable-_beforeTokenTransfer}
     function _beforeTokenTransfers(
         address from,
         address to,
@@ -496,7 +483,13 @@ contract KonSerPoap is
         uint256 quantity
     ) internal virtual override whenNotPaused {}
 
-    /// @dev See {UUPSUpgradeable}
+    /// @dev See {ERC2981Upgradeable-_feeDenominator}
+    function _feeDenominator() internal pure virtual override returns (uint96) {
+        // Royalty fee cannot be greater than 1000 basis points (10%)
+        return 1000;
+    }
+
+    /// @dev See {UUPSUpgradeable - _authorizeUpgrade}
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
     /**
