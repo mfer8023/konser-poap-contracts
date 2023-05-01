@@ -196,6 +196,7 @@ contract KonSerPoap is
      */
     function mint(address to, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
         _mintSinglePoap(to, poapId);
+        emit PoapMinted(to, poapId, tokenId);
     }
 
     /**
@@ -205,6 +206,7 @@ contract KonSerPoap is
      */
     function airdrop(address[] calldata receivers, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
         _airdropSinglePoap(receivers, poapId);
+        emit PoapDropped(receivers, poapId, _startFromTokenId, receiversLength);
     }
 
     /**
@@ -370,9 +372,7 @@ contract KonSerPoap is
             _totalSupplyByPoapId[poapId] += 1;
         }
         
-        ERC721AUpgradeable._mint(to, 1);
-
-        emit PoapMinted(to, poapId, tokenId);
+        _mint(to, 1);
     }
 
     /// @dev Airdrop internal logic
@@ -383,23 +383,12 @@ contract KonSerPoap is
         for (uint256 i = 0; i < receiversLength;) {
             address _receivers = receivers[i];
 
-            if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
-
-            uint256 tokenId = _nextTokenId();
-            _poapId[tokenId] = poapId;
-
-            unchecked {
-                _totalSupplyByPoapId[poapId] += 1;
-            }
-
-            ERC721AUpgradeable._mint(_receivers, 1);
+            _mintSinglePoap(_receivers, poapId);
 
             unchecked {
                 ++i;
             }   
         }
-
-        emit PoapDropped(receivers, poapId, _startFromTokenId, receiversLength);
     }
 
     /// @dev Burn internal logic
