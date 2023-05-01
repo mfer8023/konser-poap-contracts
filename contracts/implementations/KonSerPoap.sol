@@ -175,14 +175,14 @@ contract KonSerPoap is
         __Ownable_init();
         __RevokableDefaultOperatorFilterer_init();
         __ContractVersion_init(1);
-        // Setup royalty info
-        _setDefaultRoyalty(_initRoyaltyReceiver, _initFeeBasisPoints);
         // Setup roles
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(ADMIN_ROLE, _msgSender());
         _setupRole(MINTER_ROLE, _msgSender());
         _setupRole(ADMIN_ROLE, _initAdmin);
         _setupRole(MINTER_ROLE, _initMinter);
+        // Set default royalty info
+        _setDefaultRoyalty(_initRoyaltyReceiver, _initFeeBasisPoints);
     }
 
     // =============================================================
@@ -415,7 +415,7 @@ contract KonSerPoap is
 
             _mint(_receivers, 1);
 
-            unchecked { ++i;}   
+            unchecked { ++i; }   
         }
 
         emit PoapDropped(receivers, poapId, _startFromTokenId, receiversLength);
