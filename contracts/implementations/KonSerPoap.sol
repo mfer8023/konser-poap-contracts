@@ -407,13 +407,13 @@ contract KonSerPoap is
         if (ownerOf(tokenId) != tokenOwner) revert InvalidTokenOwner();
 
         uint256 poapId = _poapId[tokenId];
-        
-        ERC721AUpgradeable._burn(tokenId);
 
         unchecked {
             _totalSupplyByPoapId[poapId] -= 1;
         }
         delete _poapId[tokenId];
+        
+        _burn(tokenId);
 
         emit PoapBurned(tokenOwner, poapId, tokenId);
     }
