@@ -293,6 +293,27 @@ contract KonSerPoap is
         return poapURI;
     }
 
+    /**
+     * @notice Returns token IDs owned by `tokenOwner`
+     * @dev Inspired by https://github.com/0xInuarashi/ERC721G/blob/main/contracts/ERC721G.sol#L712
+     * @param tokenOwner is the owner of token IDs
+     */
+    function tokensOfOwner(address tokenOwner) public view virtual returns (uint256[] memory) {
+        uint256 balance = balanceOf(tokenOwner);
+        uint256[] memory tokenIds = new uint256[] (balance);
+        uint256 currentIndex;
+        uint256 i = _startTokenId();
+
+        while (currentIndex < balance) {
+            if (_exists(i) && ownerOf(i) == tokenOwner) { 
+                tokenIds[currentIndex++] = i; 
+            }
+            unchecked { ++i; }
+        }
+
+        return tokenIds;
+    }
+
     /// @dev See {IERC165-supportsInterface}
     function supportsInterface(bytes4 interfaceId)
         public
