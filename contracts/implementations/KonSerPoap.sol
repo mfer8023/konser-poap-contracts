@@ -216,6 +216,7 @@ contract KonSerPoap is
      */
     function burn(address tokenOwner, uint256 tokenId) external virtual onlyRole(BURNER_ROLE) whenNotPaused {
         _burnSinglePoap(tokenOwner, tokenId);
+        emit PoapBurned(tokenOwner, poapId, tokenId);
     }
 
     /**
@@ -225,6 +226,7 @@ contract KonSerPoap is
      */
     function setPoapURI(uint256 poapId, string memory poapURI) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
         _setPoapURI(poapId, poapURI);
+        emit PoapURIUpdated (poapId, poapURI);
     }
 
     /**
@@ -402,9 +404,8 @@ contract KonSerPoap is
         unchecked {
             _totalSupplyByPoapId[poapId] -= 1;
         }
-        delete _poapId[tokenId];
 
-        emit PoapBurned(tokenOwner, poapId, tokenId);
+        delete _poapId[tokenId];
     }
 
     /// @dev Set Poap URI internal logic
@@ -440,8 +441,6 @@ contract KonSerPoap is
                 _poapURI[poapId] = poapURI;
             }
         }
-
-        emit PoapURIUpdated (poapId, poapURI);
     }
 
     /// @dev See {ERC721AUpgradeable}
