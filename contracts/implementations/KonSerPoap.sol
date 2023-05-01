@@ -196,7 +196,6 @@ contract KonSerPoap is
      */
     function mint(address to, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
         _mintSinglePoap(to, poapId);
-        emit PoapMinted(to, poapId, tokenId);
     }
 
     /**
@@ -206,7 +205,6 @@ contract KonSerPoap is
      */
     function airdrop(address[] calldata receivers, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
         _airdropSinglePoap(receivers, poapId);
-        emit PoapDropped(receivers, poapId, _startFromTokenId, receiversLength);
     }
 
     /**
@@ -216,7 +214,6 @@ contract KonSerPoap is
      */
     function burn(address tokenOwner, uint256 tokenId) external virtual onlyRole(BURNER_ROLE) whenNotPaused {
         _burnSinglePoap(tokenOwner, tokenId);
-        emit PoapBurned(tokenOwner, poapId, tokenId);
     }
 
     /**
@@ -226,7 +223,6 @@ contract KonSerPoap is
      */
     function setPoapURI(uint256 poapId, string memory poapURI) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
         _setPoapURI(poapId, poapURI);
-        emit PoapURIUpdated (poapId, poapURI);
     }
 
     /**
@@ -375,6 +371,8 @@ contract KonSerPoap is
         }
         
         _mint(to, 1);
+
+        emit PoapMinted(to, poapId, tokenId);
     }
 
     /// @dev Airdrop internal logic
@@ -385,12 +383,23 @@ contract KonSerPoap is
         for (uint256 i = 0; i < receiversLength;) {
             address _receivers = receivers[i];
 
-            _mintSinglePoap(_receivers, poapId);
+            if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
+
+            uint256 tokenId = _nextTokenId();
+            _poapId[tokenId] = poapId;
+
+            unchecked {
+                _totalSupplyByPoapId[poapId] += 1;
+            }
+
+            _mint(_receivers, 1);
 
             unchecked {
                 ++i;
             }   
         }
+
+        emit PoapDropped(receivers, poapId, _startFromTokenId, receiversLength);
     }
 
     /// @dev Burn internal logic
@@ -404,8 +413,9 @@ contract KonSerPoap is
         unchecked {
             _totalSupplyByPoapId[poapId] -= 1;
         }
-
         delete _poapId[tokenId];
+
+        emit PoapBurned(tokenOwner, poapId, tokenId);
     }
 
     /// @dev Set Poap URI internal logic
@@ -441,6 +451,8 @@ contract KonSerPoap is
                 _poapURI[poapId] = poapURI;
             }
         }
+
+        emit PoapURIUpdated (poapId, poapURI);
     }
 
     /// @dev See {ERC721AUpgradeable}
