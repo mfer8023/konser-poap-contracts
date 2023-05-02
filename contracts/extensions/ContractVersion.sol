@@ -11,19 +11,19 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
  */
 abstract contract ContractVersion is Initializable {
     /// @dev Init contract version
-    uint8 internal _contractVersion;
+    uint256 internal _contractVersion;
 
     /// @dev Init the contract by setting `contractVersion` to the proxy contract
-    function __ContractVersion_init(uint8 contractVersion) internal onlyInitializing {
+    function __ContractVersion_init(uint256 contractVersion) internal onlyInitializing {
         __ContractVersion_init_unchained(contractVersion);
     }
 
-    function __ContractVersion_init_unchained(uint8 contractVersion) internal onlyInitializing {
+    function __ContractVersion_init_unchained(uint256 contractVersion) internal onlyInitializing {
         _contractVersion = contractVersion;
     }
 
     /// @dev Returns recent contract version
-    function getContractVersion() public view virtual returns (uint8) {
+    function getContractVersion() public view virtual returns (uint256) {
         return _contractVersion;
     }
 
