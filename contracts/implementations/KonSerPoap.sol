@@ -92,9 +92,6 @@ contract KonSerPoap is
     /// @dev Revert with an error when poap URI is invalid
     error InvalidPoapURI();
 
-    /// @dev Revert with an error when poap URI can not be reset
-    error PoapURICanNotBeReset();
-
     /// @dev Revert with an error when the token owner is invalid
     error InvalidTokenOwner();
 
@@ -409,27 +406,9 @@ contract KonSerPoap is
 
     /// @dev Set poap URI internal logic
     function _setPoapURI(uint256 poapId, string memory poapURI) internal virtual {
-        if (bytes(_poapURI[poapId]).length == 0 && bytes(poapURI).length == 0) { 
-            // Invalid URI
-            revert InvalidPoapURI();
-        } else if (bytes(_poapURI[poapId]).length == 0 && bytes(poapURI).length != 0) {
-            // Set new URI
-            _poapURI[poapId] = poapURI;
-        } else if (bytes(_poapURI[poapId]).length != 0 && bytes(poapURI).length == 0) {
-            // Reset existing URI
-            delete _poapURI[poapId];
-        } else {
-            // Update existing URI
-            _poapURI[poapId] = poapURI;
-        }
-        
-        if (bytes(poapURI).length == 0) {
-            // Existing URI can not be reset
-            revert PoapURICanNotBeReset();
-        } else if (bytes(_poapURI[poapId]).length != 0 && bytes(poapURI).length != 0) {
-            // Update existing URI
-            _poapURI[poapId] = poapURI;
-        }
+        if (bytes(poapURI).length == 0) revert InvalidPoapURI();
+
+        _poapURI[poapId] = poapURI;
         
         emit PoapURIUpdated (poapId, poapURI);
     }
