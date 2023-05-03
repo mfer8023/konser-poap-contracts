@@ -86,9 +86,6 @@ contract KonSerPoap is
     /// @dev Revert with an error when poap ID does not exist
     error PoapIdDoesNotExist();
 
-    /// @dev Revert with an error when poap URI does not exist
-    error PoapURIDoesNotExist();
-
     /// @dev Revert with an error when poap URI is invalid
     error InvalidPoapURI();
 
@@ -262,12 +259,12 @@ contract KonSerPoap is
 
     /// @notice Pause the contract
     function pause() external virtual onlyRole(DEFAULT_ADMIN_ROLE) {
-        PausableUpgradeable._pause();
+        _pause();
     }
 
     /// @notice Unpause the contract
     function unpause() external virtual onlyRole(DEFAULT_ADMIN_ROLE) {
-        PausableUpgradeable._unpause();
+        _unpause();
     }
 
     // =============================================================
