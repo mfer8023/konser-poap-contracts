@@ -186,7 +186,7 @@ contract KonSerPoap is
      * @param poapId must exist
      */
     function mint(address to, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
-       if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
+       if (bytes(_poapURI[poapId]).length == 0) revert PoapIdDoesNotExist();
 
         uint256 tokenId = _nextTokenId();
         _poapId[tokenId] = poapId;
@@ -208,7 +208,7 @@ contract KonSerPoap is
         for (uint256 i = 0; i < receiversLength;) {
             address _receivers = receivers[i];
 
-            if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
+            if (bytes(_poapURI[poapId]).length == 0) revert PoapIdDoesNotExist();
 
             uint256 tokenId = _nextTokenId();
             _poapId[tokenId] = poapId;
