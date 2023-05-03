@@ -61,8 +61,9 @@ import "../extensions/ContractVersion.sol";
 /**
  * @title KonSerPoap
  * @author mfer #8023 (https://github.com/mfer8023)
- * @notice A version 1 (one) of customized ERC721-based contract for POAP by KonSer (https://konser.co.id)
+ * @notice A customized ERC721-based contract for POAP by KonSer (https://konser.co.id)
  * @dev This contract is intended as an implementation to be deployed using UUPS Proxy pattern 
+ * @custom:version 1
  * @custom:source https://github.com/mfer8023/konser-poap-contracts
  * @custom:status This contract implementation is NOT audited but had been passed the unit testings
  */
@@ -178,7 +179,7 @@ contract KonSerPoap is
     // =============================================================
 
     /**
-     * @notice Mint single quantity of poap
+     * @notice Mint single quantity of `poapId` to `to`
      * @param to cannot be the zero address
      * @param poapId must exist
      */
@@ -194,7 +195,7 @@ contract KonSerPoap is
     }
 
     /**
-     * @notice Airdrop single quantity of poap
+     * @notice Airdrop single quantity of `poapId` to `receivers`
      * @param receivers cannot be the zero address
      * @param poapId must exist
      */
@@ -219,7 +220,7 @@ contract KonSerPoap is
     }
 
     /**
-     * @notice Burn single quantity of poap
+     * @notice Burn single quantity of `tokenId`
      * @param tokenOwner is the valid owner of the `tokenId`
      * @param tokenId must exist
      */
@@ -235,7 +236,7 @@ contract KonSerPoap is
     }
 
     /**
-     * @notice Set poap URI
+     * @notice Set `poapURI` for `poapId`
      * @param poapId is the unique identifer as the key of `poapURI`'s value
      * @param poapURI is the URI where the poap's metadata is located
      */
@@ -250,7 +251,7 @@ contract KonSerPoap is
     /**
      * @notice Set default royalty information
      * @param royaltyReceiver cannot be the zero address
-     * @param feeBasisPoints cannot be greater than 1000 (10%)
+     * @param feeBasisPoints cannot be greater than 10000 (100%)
      */
     function setRoyaltyInfo(address royaltyReceiver, uint96 feeBasisPoints) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
         _setDefaultRoyalty(royaltyReceiver, feeBasisPoints);
@@ -404,7 +405,7 @@ contract KonSerPoap is
         uint256 quantity
     ) internal virtual override whenNotPaused {}
 
-    /// @dev See {UUPSUpgradeable - _authorizeUpgrade}
+    /// @dev See {UUPSUpgradeable-_authorizeUpgrade}
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
     /**
