@@ -186,7 +186,14 @@ contract KonSerPoap is
      * @param poapId must exist
      */
     function mint(address to, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
-        _mintSinglePoap(to, poapId);
+       if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
+
+        uint256 tokenId = _nextTokenId();
+        _poapId[tokenId] = poapId;
+        
+        _mint(to, 1);
+
+        emit PoapMinted(to, poapId, tokenId);
     }
 
     /**
@@ -195,7 +202,23 @@ contract KonSerPoap is
      * @param poapId must exist
      */
     function airdrop(address[] calldata receivers, uint256 poapId) external virtual onlyRole(MINTER_ROLE) whenNotPaused {
-        _airdropSinglePoap(receivers, poapId);
+        uint256 _startFromTokenId = _nextTokenId();
+        uint256 receiversLength = receivers.length;
+
+        for (uint256 i = 0; i < receiversLength;) {
+            address _receivers = receivers[i];
+
+            if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
+
+            uint256 tokenId = _nextTokenId();
+            _poapId[tokenId] = poapId;
+
+            _mint(_receivers, 1);
+
+            unchecked { ++i; }   
+        }
+
+        emit PoapDropped(receivers, poapId, _startFromTokenId, receiversLength);
     }
 
     /**
@@ -204,7 +227,14 @@ contract KonSerPoap is
      * @param tokenId must exist
      */
     function burn(address tokenOwner, uint256 tokenId) external virtual onlyRole(BURNER_ROLE) whenNotPaused {
-        _burnSinglePoap(tokenOwner, tokenId);
+        if (ownerOf(tokenId) != tokenOwner) revert InvalidTokenOwner();
+
+        uint256 poapId = _poapId[tokenId];
+        delete _poapId[tokenId];
+        
+        _burn(tokenId);
+
+        emit PoapBurned(tokenOwner, poapId, tokenId);
     }
 
     /**
@@ -213,7 +243,11 @@ contract KonSerPoap is
      * @param poapURI is the URI where the poap's metadata is located
      */
     function setPoapURI(uint256 poapId, string memory poapURI) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
-        _setPoapURI(poapId, poapURI);
+        if (bytes(poapURI).length == 0) revert InvalidPoapURI();
+
+        _poapURI[poapId] = poapURI;
+        
+        emit PoapURIUpdated (poapId, poapURI);
     }
 
     /**
@@ -358,60 +392,6 @@ contract KonSerPoap is
     // =============================================================
     //                      INTERNAL FUNCTIONS
     // =============================================================
-
-    /// @dev Mint internal logic
-    function _mintSinglePoap(address to, uint256 poapId) internal virtual {
-        if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
-
-        uint256 tokenId = _nextTokenId();
-        _poapId[tokenId] = poapId;
-        
-        _mint(to, 1);
-
-        emit PoapMinted(to, poapId, tokenId);
-    }
-
-    /// @dev Airdrop internal logic
-    function _airdropSinglePoap(address[] calldata receivers, uint256 poapId) internal virtual {
-        uint256 _startFromTokenId = _nextTokenId();
-        uint256 receiversLength = receivers.length;
-
-        for (uint256 i = 0; i < receiversLength;) {
-            address _receivers = receivers[i];
-
-            if (bytes(_poapURI[poapId]).length == 0) revert PoapURIDoesNotExist();
-
-            uint256 tokenId = _nextTokenId();
-            _poapId[tokenId] = poapId;
-
-            _mint(_receivers, 1);
-
-            unchecked { ++i; }   
-        }
-
-        emit PoapDropped(receivers, poapId, _startFromTokenId, receiversLength);
-    }
-
-    /// @dev Burn internal logic
-    function _burnSinglePoap(address tokenOwner, uint256 tokenId) internal virtual {
-        if (ownerOf(tokenId) != tokenOwner) revert InvalidTokenOwner();
-
-        uint256 poapId = _poapId[tokenId];
-        delete _poapId[tokenId];
-        
-        _burn(tokenId);
-
-        emit PoapBurned(tokenOwner, poapId, tokenId);
-    }
-
-    /// @dev Set poap URI internal logic
-    function _setPoapURI(uint256 poapId, string memory poapURI) internal virtual {
-        if (bytes(poapURI).length == 0) revert InvalidPoapURI();
-
-        _poapURI[poapId] = poapURI;
-        
-        emit PoapURIUpdated (poapId, poapURI);
-    }
 
     /// @dev See {ERC721AUpgradeable-_startTokenId}
     function _startTokenId() internal view virtual override returns (uint256) {
