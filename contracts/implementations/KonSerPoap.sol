@@ -28,7 +28,7 @@ pragma solidity ^0.8.17;
     █████████▌         █████████████████████████         ███████████████████████████
     █████████▌         █████████████████████████         ███████████████████████████
     █████████▌         █████████████████████████                  ██████████████████
-    █████████▌         █████████████████████████▄▄▄▄▄▄▄▄▄         ██████████████████
+    █████████▌         █████████████████████████                  ██████████████████
     █████████▌         ██████████████████████████████████         ██████████████████
     █████████▌         ██████████████████████████████████         ██████████████████
     █████████▌         ███████████████████████████████████████████        ▐█████████
@@ -482,12 +482,6 @@ contract KonSerPoap is
         uint256 startTokenId,
         uint256 quantity
     ) internal virtual override whenNotPaused {}
-
-    /// @dev See {ERC2981Upgradeable-_feeDenominator}
-    function _feeDenominator() internal pure virtual override returns (uint96) {
-        // Royalty fee cannot be greater than 1000 basis points (10%)
-        return 1000;
-    }
 
     /// @dev See {UUPSUpgradeable - _authorizeUpgrade}
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
