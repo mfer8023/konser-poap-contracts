@@ -156,7 +156,6 @@ contract KonSerPoap is
     ) external initializerERC721A initializer {
         // Init contracts
         __ERC721A_init("KonSer POAP", "SerPOAP");
-        __Context_init();
         __UUPSUpgradeable_init();
         __ERC2981_init();
         __AccessControl_init();
