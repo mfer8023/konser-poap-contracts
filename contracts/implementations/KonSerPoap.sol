@@ -26,7 +26,6 @@ pragma solidity ^0.8.17;
     █████████▌         ████████████████                  ███████████████████████████
     █████████▌         █████████████████████████         ███████████████████████████
     █████████▌         █████████████████████████         ███████████████████████████
-    █████████▌         █████████████████████████         ███████████████████████████
     █████████▌         █████████████████████████                  ██████████████████
     █████████▌         █████████████████████████                  ██████████████████
     █████████▌         ██████████████████████████████████         ██████████████████
@@ -221,7 +220,7 @@ contract KonSerPoap is
 
     /**
      * @notice Burn single quantity of `tokenId`
-     * @param tokenOwner is the valid owner of the `tokenId`
+     * @param tokenOwner is the owner of the `tokenId`
      * @param tokenId must exist
      */
     function burn(address tokenOwner, uint256 tokenId) external virtual onlyRole(BURNER_ROLE) whenNotPaused {
@@ -237,8 +236,9 @@ contract KonSerPoap is
 
     /**
      * @notice Set `poapURI` for `poapId`
-     * @param poapId is the unique identifer as the key of `poapURI`'s value
-     * @param poapURI is the URI where the poap's metadata is located
+     * @dev Assign `poapURI` as value to `poapId` as key for _poapURI mapping
+     * @param poapId is the unique identifer as the key of `poapURI`
+     * @param poapURI is the URI where the poap's metadata is located and cannot be empty string
      */
     function setPoapURI(uint256 poapId, string memory poapURI) external virtual onlyRole(ADMIN_ROLE) whenNotPaused {
         if (bytes(poapURI).length == 0) revert InvalidPoapURI();
@@ -249,7 +249,7 @@ contract KonSerPoap is
     }
 
     /**
-     * @notice Set default royalty information
+     * @notice Set default royalty information for all the tokens in the contract
      * @param royaltyReceiver cannot be the zero address
      * @param feeBasisPoints cannot be greater than 10000 (100%)
      */
