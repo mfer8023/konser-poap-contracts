@@ -282,39 +282,6 @@ describe("(3) KonSerPoap UUPS upgradeable proxy contract after 8th tx state test
       expect(await Proxy.balanceOf(receiver2)).to.equal(3);
     });
 
-    /* HOMEWORK - test function overloading */
-    
-    /**
-     * Call safeTransferFrom operation by `receiver1`
-     * See {ERC721AUpgradeable-safeTransferFrom}
-     */
-    // it("Should emit the event `Transfer` for safeTransferFrom(receiver1, receiver2, 4)", async function () {
-    //     const { receiver1, receiver2, _proxyDeployer, _receiver1, Proxy } = await loadFixture(eightTxFixture);
-  
-    //     // See https://github.com/ethers-io/ethers.js/issues/1160
-    //     let abi = 
-    //         [ 
-    //             "function safeTransferFrom(address from, address to, uint256 tokenId)",
-    //             "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"
-    //         ];
-
-    //     // sub class contract
-    //     let subProxy = new ethers.Contract(Proxy.address, abi, _receiver1);
-
-    //     // `receiver1` safe transfer tokenId #4 to `receiver2`
-    //     await expect(subProxy.safeTransferFrom(receiver1, receiver2, 4)
-    //       .to.be.emit(subProxy, "Transfer"))
-    //       .withArgs(receiver1, receiver2, 4);
-  
-    //     // /* CROSSCHECK */
-
-    //     // Check ownerOf from tokenId #1
-    //     expect(await Proxy.ownerOf(4)).to.equal(receiver2);
-  
-    //     // Check balanceOf from `receiver2`
-    //     expect(await Proxy.balanceOf(receiver2)).to.equal(3);
-    // });
-
     /**
      * Call approve operation by `receiver1`
      * See {ERC721AUpgradeable-approve}
